@@ -1688,7 +1688,7 @@ void LoadBytecode(int stageListID, int scriptID)
 
     FileInfo info;
     if (LoadFile(scriptPath, &info)) {
-        int fileBuffer = 0;
+        byte fileBuffer = 0;
         int *scrData   = &scriptData[scriptCodePos];
         FileRead(&fileBuffer, 1);
         int scriptDataCount = fileBuffer;
@@ -1910,6 +1910,7 @@ void ClearScriptData()
     aliasCount = COMMONALIAS_COUNT;
     lineID = 0;
 
+    ClearGraphicsData();
     ClearAnimationData();
 
     for (int p = 0; p < PLAYER_COUNT; ++p) {

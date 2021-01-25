@@ -80,9 +80,11 @@ typedef unsigned int uint;
 
 #if RETRO_PLATFORM == RETRO_WIN || RETRO_PLATFORM == RETRO_OSX || RETRO_PLATFORM == RETRO_iOS || RETRO_PLATFORM == RETRO_VITA                        \
     || RETRO_PLATFORM == RETRO_UWP
-#define RETRO_USING_SDL (1)
+#define RETRO_USING_SDL1 (0)
+#define RETRO_USING_SDL2 (1)
 #else // Since its an else & not an elif these platforms probably aren't supported yet
-#define RETRO_USING_SDL (0)
+#define RETRO_USING_SDL1 (0)
+#define RETRO_USING_SDL2 (0)
 #endif
 
 #if RETRO_PLATFORM == RETRO_iOS || RETRO_PLATFORM == RETRO_ANDROID || RETRO_PLATFORM == RETRO_WP7
@@ -115,10 +117,12 @@ typedef unsigned int uint;
 #endif
 
 // this macro defines the touch device read by the game (UWP requires DIRECT)
-#if RETRO_UWP
+#if defined(RETRO_UWP) && defined(SDL_TOUCH_DEVICE_DIRECT)
 #define RETRO_TOUCH_DEVICE SDL_TOUCH_DEVICE_DIRECT
-#else
+#elif defined(SDL_TOUCH_DEVICE_INDIRECT_ABSOLUTE)
 #define RETRO_TOUCH_DEVICE SDL_TOUCH_DEVICE_INDIRECT_ABSOLUTE
+#else
+#define RETRO_TOUCH_DEVICE 0
 #endif
 
 enum RetroLanguages { RETRO_EN = 0, RETRO_FR = 1, RETRO_IT = 2, RETRO_DE = 3, RETRO_ES = 4, RETRO_JP = 5 };
@@ -167,7 +171,11 @@ enum RetroBytecodeFormat {
 #define SCREEN_CENTERY (SCREEN_YSIZE / 2)
 
 #if RETRO_PLATFORM == RETRO_WIN || RETRO_PLATFORM == RETRO_UWP
+#if RETRO_USING_SDL2
 #include <SDL.h>
+#elif RETRO_USING_SDL1
+#include <SDL.h>
+#endif
 #include <vorbis/vorbisfile.h>
 #include <theora/theora.h>
 #include <theoraplay.h>
@@ -307,12 +315,22 @@ public:
     int windowXSize; // width of window/screen in the previous frame
     int windowYSize; // height of window/screen in the previous frame
 
-#if RETRO_USING_SDL
+#if RETRO_USING_SDL2
     SDL_Window *window          = nullptr;
     SDL_Renderer *renderer      = nullptr;
     SDL_Texture *screenBuffer   = nullptr;
     SDL_Texture *screenBuffer2x = nullptr;
     SDL_Texture *videoBuffer    = nullptr;
+
+    SDL_Event sdlEvents;
+#endif
+
+#if RETRO_USING_SDL1
+    SDL_Surface *windowSurface = nullptr;
+
+    SDL_Surface *screenBuffer   = nullptr;
+    SDL_Surface *screenBuffer2x = nullptr;
+    SDL_Surface *videoBuffer    = nullptr;
 
     SDL_Event sdlEvents;
 #endif
