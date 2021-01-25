@@ -201,9 +201,16 @@ void ProcessMusicStream(Sint32 *stream, size_t bytes_wanted)
                         break;
                     }
                 }
+                try 
+                {
 
-                if (SDL_AudioStreamPut(musInfo.stream, musInfo.buffer, bytes_read) == -1)
-                    return;
+                    if (SDL_AudioStreamPut(musInfo.stream, musInfo.buffer, bytes_read) == -1)
+                        return;
+                }
+                catch(std::exception e)
+                {
+                    printLog(e.what());
+                }
             }
 
             // Now that we know there are enough samples, read them and mix them

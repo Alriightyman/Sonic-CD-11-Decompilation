@@ -1,5 +1,6 @@
 #include "RetroEngine.hpp"
 #include <cmath>
+#include <string>
 
 ObjectScript objectScriptList[OBJECT_COUNT];
 ScriptPtr functionScriptList[FUNCTION_COUNT];
@@ -68,10 +69,14 @@ const char variableNames[][0x20] = {
     "TempValue5",
     "TempValue6",
     "TempValue7",
+
     "CheckResult",
+
     "ArrayPos0",
     "ArrayPos1",
+
     "Global",
+
     "Object.EntityNo",
     "Object.Type",
     "Object.PropertyValue",
@@ -101,6 +106,7 @@ const char variableNames[][0x20] = {
     "Object.Value6",
     "Object.Value7",
     "Object.OutOfBounds",
+
     "Player.State",
     "Player.ControlMode",
     "Player.ControlLock",
@@ -178,6 +184,7 @@ const char variableNames[][0x20] = {
     "Player.Value14",
     "Player.Value15",
     "Player.OutOfBounds",
+
     "Stage.State",
     "Stage.ActiveList",
     "Stage.ListPos",
@@ -205,6 +212,7 @@ const char variableNames[][0x20] = {
     "Stage.MidPoint",
     "Stage.PlayerListPos",
     "Stage.ActivePlayer",
+
     "Screen.CameraEnabled",
     "Screen.CameraTarget",
     "Screen.CameraStyle",
@@ -218,11 +226,14 @@ const char variableNames[][0x20] = {
     "Screen.ShakeX",
     "Screen.ShakeY",
     "Screen.AdjustCameraY",
+
     "TouchScreen.Down",
     "TouchScreen.XPos",
     "TouchScreen.YPos",
+
     "Music.Volume",
     "Music.CurrentTrack",
+
     "KeyDown.Up",
     "KeyDown.Down",
     "KeyDown.Left",
@@ -239,8 +250,10 @@ const char variableNames[][0x20] = {
     "KeyPress.ButtonB",
     "KeyPress.ButtonC",
     "KeyPress.Start",
+
     "Menu1.Selection",
     "Menu2.Selection",
+
     "TileLayer.XSize",
     "TileLayer.YSize",
     "TileLayer.Type",
@@ -253,12 +266,14 @@ const char variableNames[][0x20] = {
     "TileLayer.ScrollPos",
     "TileLayer.DeformationOffset",
     "TileLayer.DeformationOffsetW",
+
     "HParallax.ParallaxFactor",
     "HParallax.ScrollSpeed",
     "HParallax.ScrollPos",
     "VParallax.ParallaxFactor",
     "VParallax.ScrollSpeed",
     "VParallax.ScrollPos",
+
     "3DScene.NoVertices",
     "3DScene.NoFaces",
     "VertexBuffer.x",
@@ -274,6 +289,7 @@ const char variableNames[][0x20] = {
     "FaceBuffer.Color",
     "3DScene.ProjectionX",
     "3DScene.ProjectionY",
+
     "Engine.State",
     "Stage.DebugMode",
     "Engine.Message",
@@ -425,7 +441,8 @@ const FunctionInfo functions[] = { FunctionInfo("End", 0),
                              FunctionInfo("SetLeaderboard", 2),
                              FunctionInfo("LoadOnlineMenu", 1),
                              FunctionInfo("EngineCallback", 1),
-                             FunctionInfo("HapticEffect", 4) };
+                             FunctionInfo("HapticEffect", 4),
+                             FunctionInfo("LogMessage", 1)};
 
 AliasInfo aliases[0x80] = { AliasInfo("true", "1"),
                             AliasInfo("false", "0"),
@@ -843,7 +860,8 @@ enum ScrFunction {
     FUNC_LOADONLINEMENU,
     FUNC_ENGINECALLBACK,
     FUNC_HAPTICEFFECT,
-    FUNC_MAX_CNT
+    FUNC_LOG_MSG,
+    FUNC_MAX_CNT    
 };
 
 void CheckAliasText(char *text)
@@ -1417,7 +1435,6 @@ bool CheckOpcodeType(char *text)
 
 void ParseScriptFile(char *scriptName, int scriptID)
 {
-
     jumpTableStackPos = 0;
     lineID            = 0;
     aliasCount        = COMMONALIAS_COUNT;
@@ -3395,6 +3412,7 @@ void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub)
                 break;
             case FUNC_PLAYSFX:
                 opcodeSize = 0;
+                printLog("SFX: (%d), loop = (%d)",scriptEng.operands[0], scriptEng.operands[1]);
                 PlaySfx(scriptEng.operands[0], scriptEng.operands[1]);
                 break;
             case FUNC_STOPSFX:
@@ -3729,6 +3747,9 @@ void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub)
             case FUNC_ENGINECALLBACK:
                 opcodeSize = 0;
                 Engine.Callback(scriptEng.operands[0]);
+                break;
+            case FUNC_LOG_MSG: 
+                printLog(scriptText);
                 break;
 #if RETRO_USE_HAPTICS
             case FUNC_HAPTICEFFECT:

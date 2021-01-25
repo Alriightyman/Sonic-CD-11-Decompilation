@@ -78,7 +78,7 @@ bin/
 SonicCDDecompUWP/Generated Files
 SonicCDDecompUWP/BundleArtifacts
 SonicCDDecompUWP/Assets/*.png
-
+Runtime/
 # Visual Studio 2015 cache/options directory
 .vs/
 
@@ -269,3 +269,7 @@ _Pvt_Extensions/
 ModelManifest.xml
 
 Ignored/
+/Runtime/Data - Copy
+SonicCDDecomp/settings.ini
+*.vcxproj
+*.sln

@@ -340,18 +340,24 @@ bool RetroEngine::LoadGameConfig(const char *filePath)
         FileRead(gameDescriptionText, fileBuffer);
         gameDescriptionText[fileBuffer] = 0;
 
-        // Read Obect Names
+        // Read Object Names
         int objectCount = 0;
         FileRead(&objectCount, 1);
         for (int o = 0; o < objectCount; ++o) {
             FileRead(&fileBuffer, 1);
-            for (int i = 0; i < fileBuffer; ++i) FileRead(&fileBuffer2, 1);
+            for (int i = 0; i < fileBuffer; ++i)
+            {
+                FileRead(&fileBuffer2, 1);
+            }
         }
 
         // Read Script Paths
         for (int s = 0; s < objectCount; ++s) {
             FileRead(&fileBuffer, 1);
-            for (int i = 0; i < fileBuffer; ++i) FileRead(&fileBuffer2, 1);
+            for (int i = 0; i < fileBuffer; ++i)
+            {
+                FileRead(&fileBuffer2, 1);
+            }
         }
 
         int varCount = 0;
@@ -390,7 +396,10 @@ bool RetroEngine::LoadGameConfig(const char *filePath)
         FileRead(&sfxCount, 1);
         for (int s = 0; s < sfxCount; ++s) {
             FileRead(&fileBuffer, 1);
-            for (int i = 0; i < fileBuffer; ++i) FileRead(&fileBuffer2, 1);
+            for (int i = 0; i < fileBuffer; ++i)
+            {
+                FileRead(&fileBuffer2, 1);
+            }
         }
 
         // Read Player Names
@@ -398,7 +407,10 @@ bool RetroEngine::LoadGameConfig(const char *filePath)
         FileRead(&playerCount, 1);
         for (int p = 0; p < playerCount; ++p) {
             FileRead(&fileBuffer, 1);
-            for (int i = 0; i < fileBuffer; ++i) FileRead(&fileBuffer2, 1);
+            for (int i = 0; i < fileBuffer; ++i)
+            {
+                FileRead(&fileBuffer2, 1);
+            }
         }
 
         for (int c = 0; c < 4; ++c) {
