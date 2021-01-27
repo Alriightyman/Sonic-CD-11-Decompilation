@@ -108,48 +108,52 @@ void ProcessStage(void)
     int updateMax = 0; 
     switch (stageMode) {
         case STAGEMODE_LOAD: // Startup
+        {
             fadeMode = 0;
             SetActivePalette(0, 0, 256);
 
             cameraEnabled = 1;
-            cameraTarget  = -1;
+            cameraTarget = -1;
             cameraAdjustY = 0;
             xScrollOffset = 0;
             yScrollOffset = 0;
-            yScrollA      = 0;
-            yScrollB      = SCREEN_YSIZE;
-            xScrollA      = 0;
-            xScrollB      = SCREEN_XSIZE;
-            yScrollMove   = 0;
-            cameraShakeX  = 0;
-            cameraShakeY  = 0;
+            yScrollA = 0;
+            yScrollB = SCREEN_YSIZE;
+            xScrollA = 0;
+            xScrollB = SCREEN_XSIZE;
+            yScrollMove = 0;
+            cameraShakeX = 0;
+            cameraShakeY = 0;
 
             vertexCount = 0;
-            faceCount   = 0;
-            for (int i = 0; i < PLAYER_COUNT; ++i) {
+            faceCount = 0;
+            for (int i = 0; i < PLAYER_COUNT; ++i)
+            {
                 MEM_ZERO(playerList[i]);
-                playerList[i].visible            = 1;
-                playerList[i].gravity            = 1; // Air
-                playerList[i].tileCollisions     = true;
+                playerList[i].visible = 1;
+                playerList[i].gravity = 1; // Air
+                playerList[i].tileCollisions = true;
                 playerList[i].objectInteractions = true;
             }
-            pauseEnabled      = false;
-            timeEnabled       = false;
+            pauseEnabled = false;
+            timeEnabled = false;
             stageMilliseconds = 0;
-            stageSeconds      = 0;
-            stageMinutes      = 0;
+            stageSeconds = 0;
+            stageMinutes = 0;
             Engine.frameCount = 0;
-            stageMode         = STAGEMODE_NORMAL;
+            stageMode = STAGEMODE_NORMAL;
             ResetBackgroundSettings();
             LoadStageFiles();
-
-            break;
+        }
+        break;
         case STAGEMODE_NORMAL:
+        {
             drawStageGFXHQ = false;
             if (fadeMode > 0)
                 fadeMode--;
 
-            if (paletteMode > 0) {
+            if (paletteMode > 0)
+            {
                 paletteMode = 0;
                 SetActivePalette(0, 0, 256);
             }
@@ -158,15 +162,19 @@ void ProcessStage(void)
             lastYSize = -1;
             CheckKeyDown(&keyDown, 0xFF);
             CheckKeyPress(&keyPress, 0xFF);
-            if (pauseEnabled && keyPress.start) {
+            if (pauseEnabled && keyPress.start)
+            {
                 stageMode = STAGEMODE_PAUSED;
                 PauseSound();
             }
 
-            if (timeEnabled) {
-                if (++frameCounter == Engine.refreshRate) {
+            if (timeEnabled)
+            {
+                if (++frameCounter == Engine.refreshRate)
+                {
                     frameCounter = 0;
-                    if (++stageSeconds > 59) {
+                    if (++stageSeconds > 59)
+                    {
                         stageSeconds = 0;
                         if (++stageMinutes > 59)
                             stageMinutes = 0;
@@ -184,34 +192,42 @@ void ProcessStage(void)
             }*/
 
             // Update
-            for (int i = 0; i < updateMax; ++i) {
+            for (int i = 0; i < updateMax; ++i)
+            {
                 ProcessObjects();
             }
 
-            if (cameraTarget > -1) {
-                if (cameraEnabled == 1) {
-                    switch (cameraStyle) {
-                        case 0: SetPlayerScreenPosition(&playerList[cameraTarget]); break;
-                        case 1: SetPlayerScreenPositionCDStyle(&playerList[cameraTarget]); break;
-                        case 2: SetPlayerScreenPositionCDStyle(&playerList[cameraTarget]); break;
-                        case 3: SetPlayerScreenPositionCDStyle(&playerList[cameraTarget]); break;
-                        case 4: SetPlayerHLockedScreenPosition(&playerList[cameraTarget]); break;
-                        default: break;
+            if (cameraTarget > -1)
+            {
+                if (cameraEnabled == 1)
+                {
+                    switch (cameraStyle)
+                    {
+                    case 0: SetPlayerScreenPosition(&playerList[cameraTarget]); break;
+                    case 1: SetPlayerScreenPositionCDStyle(&playerList[cameraTarget]); break;
+                    case 2: SetPlayerScreenPositionCDStyle(&playerList[cameraTarget]); break;
+                    case 3: SetPlayerScreenPositionCDStyle(&playerList[cameraTarget]); break;
+                    case 4: SetPlayerHLockedScreenPosition(&playerList[cameraTarget]); break;
+                    default: break;
                     }
                 }
-                else {
+                else
+                {
                     SetPlayerLockedScreenPosition(&playerList[cameraTarget]);
                 }
             }
 
             DrawStageGFX();
-            break;
+        }
+        break;
         case STAGEMODE_PAUSED:
+        {
             drawStageGFXHQ = false;
             if (fadeMode > 0)
                 fadeMode--;
 
-            if (paletteMode > 0) {
+            if (paletteMode > 0)
+            {
                 paletteMode = 0;
                 SetActivePalette(0, 0, 256);
             }
@@ -219,7 +235,7 @@ void ProcessStage(void)
             lastYSize = -1;
             CheckKeyDown(&keyDown, 0xFF);
             CheckKeyPress(&keyPress, 0xFF);
-            
+
             updateMax = 1;
             /*updateMax = Engine.renderFrameIndex;
             if (Engine.refreshRate >= Engine.targetRefreshRate) {
@@ -229,7 +245,8 @@ void ProcessStage(void)
             }*/
 
             // Update
-            for (int i = 0; i < updateMax; ++i) {
+            for (int i = 0; i < updateMax; ++i)
+            {
                 ProcessPausedObjects();
             }
 
@@ -240,11 +257,13 @@ void ProcessStage(void)
             DrawObjectList(4);
             DrawObjectList(5);
             DrawObjectList(6);
-            if (pauseEnabled && keyPress.start) {
+            if (pauseEnabled && keyPress.start)
+            {
                 stageMode = STAGEMODE_NORMAL;
                 ResumeSound();
             }
-            break;
+        }
+        break;
     }
     Engine.frameCount++;
 }

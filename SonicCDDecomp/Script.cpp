@@ -1,6 +1,7 @@
 #include "RetroEngine.hpp"
 #include <cmath>
 #include <string>
+#include <windows.h>
 
 ObjectScript objectScriptList[OBJECT_COUNT];
 ScriptPtr functionScriptList[FUNCTION_COUNT];
@@ -442,7 +443,8 @@ const FunctionInfo functions[] = { FunctionInfo("End", 0),
                              FunctionInfo("LoadOnlineMenu", 1),
                              FunctionInfo("EngineCallback", 1),
                              FunctionInfo("HapticEffect", 4),
-                             FunctionInfo("LogMessage", 1)};
+                             FunctionInfo("LogMessage", 1),
+                             FunctionInfo("LogIntMessage", 1)};
 
 AliasInfo aliases[0x80] = { AliasInfo("true", "1"),
                             AliasInfo("false", "0"),
@@ -861,6 +863,7 @@ enum ScrFunction {
     FUNC_ENGINECALLBACK,
     FUNC_HAPTICEFFECT,
     FUNC_LOG_MSG,
+    FUNC_LOG_INT_MSG,
     FUNC_MAX_CNT    
 };
 
@@ -3325,6 +3328,9 @@ void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub)
                 }
                 break;
             case FUNC_CREATETEMPOBJECT: {
+                static int count = 1;
+                std::string outputString = std::to_string(count++) + "\n";
+                OutputDebugStringA(outputString.c_str());
                 opcodeSize = 0;
                 if (objectEntityList[scriptEng.arrayPosition[2]].type > 0 && ++scriptEng.arrayPosition[2] == ENTITY_COUNT)
                     scriptEng.arrayPosition[2] = TEMPENTITY_START;
@@ -3750,8 +3756,13 @@ void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub)
                 Engine.Callback(scriptEng.operands[0]);
                 break;
             case FUNC_LOG_MSG: 
-                printLog(scriptText);
+                //printLog(scriptText);
+                OutputDebugStringA(scriptText);
                 break;
+            case FUNC_LOG_INT_MSG:                
+                OutputDebugStringA(std::to_string(scriptEng.operands[0]).c_str());
+                break;
+
 #if RETRO_USE_HAPTICS
             case FUNC_HAPTICEFFECT:
                 opcodeSize = 0;
