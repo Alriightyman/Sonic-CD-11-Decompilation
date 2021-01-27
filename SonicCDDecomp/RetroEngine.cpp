@@ -379,7 +379,7 @@ bool RetroEngine::LoadGameConfig(const char *filePath)
         FileRead(gameDescriptionText, fileBuffer);
         gameDescriptionText[fileBuffer] = 0;
 
-        // Read Obect Names
+        // Read Object Names
         byte objectCount = 0;
         FileRead(&objectCount, 1);
         for (byte o = 0; o < objectCount; ++o) {

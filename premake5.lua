@@ -72,7 +72,7 @@ project "Sonic-CD"
 
 	defines
 	{
-
+		RETRO_USING_SDL2
 	}
 
 	includedirs
